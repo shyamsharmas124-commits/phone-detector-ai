@@ -1,4 +1,4 @@
-# 🚀 Deployment Steps
+# Deployment Steps
 
 ## For First-Time Users
 
@@ -6,7 +6,8 @@ Follow these exact steps after cloning the repository.
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
+
 - Python 3.11+
 - GitHub account
 - Render account (free)
@@ -15,7 +16,7 @@ Follow these exact steps after cloning the repository.
 
 ---
 
-## 1️⃣ Local Testing (Optional but Recommended)
+## Step 1: Local Testing (Optional but Recommended)
 
 ### Terminal 1 - Backend
 ```bash
@@ -37,7 +38,7 @@ Visit: `http://localhost:8000`
 
 ---
 
-## 2️⃣ Deploy Backend to Render
+## Step 2: Deploy Backend to Render
 
 ### Step A: Prepare Repository
 1. Push code to GitHub (if not already)
@@ -66,7 +67,7 @@ Expected: `{"status": "running", "message": "Phone Detector API"}`
 
 ---
 
-## 3️⃣ Deploy Frontend to Vercel
+## Step 3: Deploy Frontend to Vercel
 
 ### Step A: Prepare Repository
 1. Your code must already be on GitHub
@@ -88,9 +89,9 @@ Expected: `{"status": "running", "message": "Phone Detector API"}`
 
 ---
 
-## 4️⃣ Connect Backend URL to Frontend
+## Step 4: Connect Backend URL to Frontend
 
-### Choose ONE option:
+Choose ONE option:
 
 #### Option A: Environment Variable (Recommended)
 1. Go to Vercel Dashboard
@@ -115,40 +116,29 @@ Expected: `{"status": "running", "message": "Phone Detector API"}`
 
 ---
 
-## ✅ Final Verification
+## Final Verification
 
 1. Visit your frontend URL
 2. Allow camera permission
 3. Point phone at camera
-4. **Expected result:** Red alert appears + alarm plays
+4. Expected result: Red alert appears + alarm plays
 5. Test with phone front and back
 
 ---
 
-## 🔗 Final URLs
+## Final URLs
 
-- **Frontend:** `https://YOUR-PROJECT.vercel.app`
-- **Backend API:** `https://YOUR-BACKEND.onrender.com`
-- **Test Backend:** `https://YOUR-BACKEND.onrender.com/`
-
----
-
-## 🎉 Done!
-
-Your app is now live and accessible worldwide!
-
-Share with others:
-```
-https://YOUR-PROJECT.vercel.app
-```
+- Frontend: `https://phone-detector-ai.vercel.app`
+- Backend API: `https://phone-detector-ai-backend.onrender.com`
+- Test Backend: `https://phone-detector-ai-backend.onrender.com/`
 
 ---
 
-## 🆘 If Something Breaks
+## Troubleshooting
 
 ### Backend Issues (Render)
-- Check Render logs: Project → Logs → "tail -f build.log" and "tail -f deploy.log"
-- Common issue: Model downloading takes 1-2 minutes on first run
+- Check Render logs: Project → Logs
+- Common issue: Model downloads on first run (1-2 minutes)
 - Solution: Wait 2 minutes, refresh page
 
 ### Frontend Issues (Vercel)
@@ -158,16 +148,14 @@ https://YOUR-PROJECT.vercel.app
 
 ### Connection Issues
 - Verify backend URL in script.js
-- Check CORS is enabled (it is by default)
+- Check CORS is enabled (default)
 - Test backend endpoint directly in browser
 
 ---
 
-## 📝 Notes
+## Notes
 
 - Both Render and Vercel free tiers are sufficient
 - Model (YOLOv8) auto-downloads on first detection (~40MB)
-- Backend may sleep after 15 min inactivity (free tier) - just refresh to wake up
+- Backend may sleep after 15 min inactivity (free tier) - refresh to wake up
 - No database needed - stateless API
-
-Enjoy! 🎉

@@ -12,7 +12,7 @@ except Exception as e:
     print("Downloading fresh YOLOv8 model...")
     if os.path.exists(MODEL_PATH):
         os.remove(MODEL_PATH)
-    model = YOLO("yolov8n.pt")  # Auto-downloads from Ultralytics
+    model = YOLO("yolov8n.pt")
 
 
 def detect_phone(image):
@@ -29,12 +29,12 @@ def detect_phone(image):
             label = model.names[cls]
             confidence = float(box.conf[0])
             
-            # Debug: Print all detections
+            # Print detection
             print(f"Detected: {label} (confidence: {confidence:.2f})")
 
             if label == "cell phone" and confidence > 0.3:
                 phone_detected = True
-                print(f"✅ PHONE DETECTED with confidence {confidence:.2f}")
+                print(f"Phone detected: {label} confidence {confidence:.2f}")
 
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
 

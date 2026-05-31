@@ -7,11 +7,11 @@ const alarmSound = document.getElementById("alarmSound");
 // Use environment variable for backend URL, or detect based on hostname
 const BACKEND_URL = window.location.hostname === "localhost" 
     ? "http://localhost:5000/detect"
-    : `https://${window.BACKEND_HOST || "YOUR-BACKEND-URL.onrender.com"}/detect`;
+    : `https://${window.BACKEND_HOST || "phone-detector-ai-backend.onrender.com"}/detect`;
 
 let cooldown = false;
 
-console.log("🎥 Phone Detector initialized");
+console.log("Phone Detector initialized");
 
 async function setupCamera() {
     try {
@@ -19,7 +19,7 @@ async function setupCamera() {
             video: { width: { ideal: 640 }, height: { ideal: 480 } }
         });
         video.srcObject = stream;
-        console.log("✅ Camera started");
+        console.log("Camera started");
     } catch (error) {
         console.error("❌ Camera error:", error);
         alert("Please allow camera access!");
@@ -48,40 +48,40 @@ async function detectFrame() {
         const data = await response.json();
 
         if (data.phone_detected) {
-            console.log("📱 PHONE DETECTED!", data);
+            console.log("Phone detected", data);
             if (!cooldown) {
                 triggerAlert();
             }
         }
 
     } catch (error) {
-        console.error("❌ Detection error:", error);
+        console.error("Detection error:", error);
     }
 }
 
 function triggerAlert() {
-    console.log("🚨 ALERT TRIGGERED!");
+    console.log("Alert triggered");
     cooldown = true;
 
     // Show alert box
     alertBox.classList.remove("hidden");
-    console.log("✅ Alert box shown");
+    console.log("Alert box displayed");
 
     // Play audio
     const playPromise = alarmSound.play().catch(error => {
-        console.error("❌ Audio play error:", error);
+        console.error("Audio play error:", error);
         // Fallback: use beep sound with Web Audio API
         playBeep();
     });
 
     setTimeout(() => {
         alertBox.classList.add("hidden");
-        console.log("✅ Alert box hidden");
+        console.log("Alert box hidden");
     }, 3000);
 
     setTimeout(() => {
         cooldown = false;
-        console.log("✅ Cooldown reset");
+        console.log("Cooldown reset");
     }, 5000);
 }
 
@@ -104,9 +104,9 @@ function playBeep() {
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.5);
         
-        console.log("✅ Beep sound played");
+        console.log("Fallback beep played");
     } catch (error) {
-        console.error("❌ Beep error:", error);
+        console.error("Fallback beep error:", error);
     }
 }
 
@@ -119,4 +119,4 @@ setInterval(() => {
     }
 }, 1500);
 
-console.log("🔄 Detection loop started");
+console.log("Detection loop started");
