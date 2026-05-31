@@ -4,10 +4,10 @@ const ctx = canvas.getContext("2d");
 const alertBox = document.getElementById("alertBox");
 const alarmSound = document.getElementById("alarmSound");
 
-// Use environment variable for backend URL, or detect based on hostname
+// Backend API endpoint
 const BACKEND_URL = window.location.hostname === "localhost" 
     ? "http://localhost:5000/detect"
-    : `https://${window.BACKEND_HOST || "phone-detector-ai-backend.onrender.com"}/detect`;
+    : "https://phone-detector-ai-backend.onrender.com/detect";
 
 let cooldown = false;
 
