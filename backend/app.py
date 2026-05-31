@@ -8,33 +8,13 @@ import os
 
 app = Flask(__name__)
 
-# Allowed frontend origins
-ALLOWED_ORIGINS = [
-    "https://phone-detector-ai.vercel.app",
-]
-
-# Enable CORS properly
+# Proper CORS setup
 CORS(
     app,
-    resources={
-        r"/*": {
-            "origins": ALLOWED_ORIGINS,
-            "methods": ["GET", "POST", "OPTIONS"],
-            "allow_headers": ["Content-Type"]
-        }
-    }
+    origins=[
+        "https://phone-detector-ai.vercel.app"
+    ]
 )
-
-# Handle preflight requests
-@app.before_request
-def handle_options():
-    if request.method == "OPTIONS":
-        response = jsonify({"status": "ok"})
-        response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin", "*"))
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
-        response.headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        return response, 200
-
 
 @app.route("/")
 def home():
@@ -42,7 +22,6 @@ def home():
         "status": "running",
         "message": "Phone Detector API"
     })
-
 
 @app.route("/detect", methods=["POST"])
 def detect():
@@ -74,17 +53,10 @@ def detect():
         # Run AI detection
         result = detect_phone(img)
 
-        response = jsonify(result)
-
-        # Add CORS headers manually
-        response.headers.add(
-            "Access-Control-Allow-Origin",
-            request.headers.get("Origin", "*")
-        )
-
-        return response
+        return jsonify(result)
 
     except Exception as e:
+
         print("Detection Error:", str(e))
 
         return jsonify({
