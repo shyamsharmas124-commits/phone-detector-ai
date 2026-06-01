@@ -48,10 +48,10 @@ async function detectFrame() {
 
     try {
 
-        canvas.width = 320;
-        canvas.height = 240;
+        canvas.width = 224;
+        canvas.height = 224;
 
-        ctx.drawImage(video, 0, 0, 320, 240);
+        ctx.drawImage(video, 0, 0, 224, 224);
 
         const image = canvas.toDataURL("image/jpeg", 0.3);
 
@@ -177,7 +177,9 @@ function playBeep() {
 setupCamera();
 
 setInterval(() => {
-    detectFrame();
-}, 8000);
+    if (!cooldown) {
+        detectFrame();
+    }
+}, 15000);
 
 console.log("Detection loop started");

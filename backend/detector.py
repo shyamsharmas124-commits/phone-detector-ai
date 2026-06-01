@@ -39,7 +39,7 @@ def detect_phone(image):
 
         results = model(
             image,
-            imgsz=320,
+            imgsz=224,
             verbose=False
         )
 
