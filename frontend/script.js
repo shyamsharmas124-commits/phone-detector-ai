@@ -180,6 +180,6 @@ setInterval(() => {
     if (!cooldown) {
         detectFrame();
     }
-}, 15000);
+}, 20000);
 
 console.log("Detection loop started");

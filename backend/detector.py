@@ -1,26 +1,9 @@
 ﻿from ultralytics import YOLO
 import cv2
-import os
+import gc
 
-MODEL_PATH = "yolov8n.pt"
-
-try:
-    model = YOLO(MODEL_PATH)
-    model.to("cpu")
-    print("YOLO loaded")
-
-except Exception as e:
-
-    print("Model load failed:", e)
-
-    if os.path.exists(MODEL_PATH):
-        os.remove(MODEL_PATH)
-
-    model = YOLO("yolov8n.pt")
-    model.to("cpu")
-
-    print("Fresh model downloaded")
-
+model = YOLO("yolov8n.pt")
+model.to("cpu")
 
 def detect_phone(image):
 
@@ -32,25 +15,22 @@ def detect_phone(image):
                 "detections": []
             }
 
-        image = cv2.resize(
-            image,
-            (320, 240)
-        )
+        image = cv2.resize(image, (224, 224))
 
-        results = model(
-            image,
+        results = model.predict(
+            source=image,
             imgsz=224,
-            verbose=False
+            conf=0.35,
+            verbose=False,
+            device="cpu"
         )
 
-        phone_detected = False
         detections = []
+        phone_detected = False
 
         for result in results:
 
-            boxes = result.boxes
-
-            for box in boxes:
+            for box in result.boxes:
 
                 cls = int(box.cls[0])
 
@@ -58,10 +38,7 @@ def detect_phone(image):
 
                 confidence = float(box.conf[0])
 
-                if (
-                    label == "cell phone"
-                    and confidence > 0.35
-                ):
+                if label == "cell phone":
 
                     phone_detected = True
 
@@ -75,6 +52,9 @@ def detect_phone(image):
                         "confidence": round(confidence, 2),
                         "box": [x1, y1, x2, y2]
                     })
+
+        del results
+        gc.collect()
 
         return {
             "phone_detected": phone_detected,
