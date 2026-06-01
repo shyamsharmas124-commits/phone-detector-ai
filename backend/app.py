@@ -12,8 +12,7 @@ app = Flask(__name__)
 CORS(
     app,
     origins=[
-        "https://phone-detector-ai.vercel.app",
-        "file:///D:/GitHub/PERSONAL%20PROJECTS/phonedetector/frontend/index.html"
+        "https://phonedetectorai.vercel.app"
     ]
 )
 
