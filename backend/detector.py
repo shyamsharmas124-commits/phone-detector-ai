@@ -1,6 +1,5 @@
 ﻿from ultralytics import YOLO
 import cv2
-import numpy as np
 import os
 
 MODEL_PATH = "yolov8n.pt"
@@ -8,12 +7,11 @@ MODEL_PATH = "yolov8n.pt"
 try:
     model = YOLO(MODEL_PATH)
     model.to("cpu")
-
-    print("YOLO model loaded successfully")
+    print("YOLO loaded")
 
 except Exception as e:
 
-    print(f"Model loading failed: {e}")
+    print("Model load failed:", e)
 
     if os.path.exists(MODEL_PATH):
         os.remove(MODEL_PATH)
@@ -21,7 +19,7 @@ except Exception as e:
     model = YOLO("yolov8n.pt")
     model.to("cpu")
 
-    print("Fresh YOLO model downloaded")
+    print("Fresh model downloaded")
 
 
 def detect_phone(image):
@@ -31,13 +29,17 @@ def detect_phone(image):
         if image is None:
             return {
                 "phone_detected": False,
-                "detections": [],
-                "error": "Invalid image"
+                "detections": []
             }
 
-        image = cv2.resize(image, (640, 480))
+        image = cv2.resize(
+            image,
+            (320, 240)
+        )
+
         results = model(
             image,
+            imgsz=320,
             verbose=False
         )
 
@@ -45,16 +47,16 @@ def detect_phone(image):
         detections = []
 
         for result in results:
-            boxes = result.boxes
-            for box in boxes:
-                cls = int(box.cls[0])
-                label = model.names[cls]
-                confidence = float(box.conf[0])
 
-                print(
-                    f"Detected: {label} "
-                    f"(confidence: {confidence:.2f})"
-                )
+            boxes = result.boxes
+
+            for box in boxes:
+
+                cls = int(box.cls[0])
+
+                label = model.names[cls]
+
+                confidence = float(box.conf[0])
 
                 if (
                     label == "cell phone"
@@ -74,18 +76,14 @@ def detect_phone(image):
                         "box": [x1, y1, x2, y2]
                     })
 
-        result_data = {
+        return {
             "phone_detected": phone_detected,
             "detections": detections
         }
 
-        print("Returning result:", result_data)
-
-        return result_data
-
     except Exception as e:
 
-        print("YOLO Detection Error:", str(e))
+        print("Detection error:", e)
 
         return {
             "phone_detected": False,
