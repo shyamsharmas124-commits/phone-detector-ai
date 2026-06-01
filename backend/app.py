@@ -5,10 +5,10 @@ import cv2
 import numpy as np
 import base64
 import os
+import traceback
 
 app = Flask(__name__)
 
-# Proper CORS setup
 CORS(
     app,
     origins=[
@@ -23,23 +23,32 @@ def home():
         "message": "Phone Detector API"
     })
 
+
 @app.route("/detect", methods=["POST"])
 def detect():
 
     try:
+
+        print("Request received")
+
         data = request.json
 
-        if not data or "image" not in data:
+        if not data:
+            return jsonify({
+                "error": "No JSON data"
+            }), 400
+
+        if "image" not in data:
             return jsonify({
                 "error": "No image provided"
             }), 400
 
         image_data = data["image"]
 
-        # Remove base64 header
+        print("Image received")
+
         encoded_data = image_data.split(",")[1]
 
-        # Decode image
         nparr = np.frombuffer(
             base64.b64decode(encoded_data),
             np.uint8
@@ -50,14 +59,25 @@ def detect():
             cv2.IMREAD_COLOR
         )
 
-        # Run AI detection
+        if img is None:
+            return jsonify({
+                "error": "Image decode failed"
+            }), 400
+
+        print("Running AI detection")
+
         result = detect_phone(img)
+
+        print("Detection completed")
 
         return jsonify(result)
 
     except Exception as e:
 
-        print("Detection Error:", str(e))
+        print("========== ERROR ==========")
+        print(str(e))
+        traceback.print_exc()
+        print("===========================")
 
         return jsonify({
             "error": str(e)
