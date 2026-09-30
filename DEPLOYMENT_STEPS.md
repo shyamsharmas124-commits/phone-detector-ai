@@ -1,24 +1,48 @@
-# Deployment Steps
+# Local Setup Guide
 
-## For First-Time Users
+## For Running Locally on Individual Machines
 
-Follow these exact steps after cloning the repository.
+This application runs entirely on your local machine. No online deployment or cloud accounts required.
+
+---
+
+## System Requirements
+
+### Minimum System Requirements
+- **Operating System:** Windows 10+, macOS 10.14+, or Linux (Ubuntu 18.04+)
+- **Python:** 3.11 or higher
+- **RAM:** 4 GB minimum (8 GB recommended for smooth operation)
+- **Storage:** 1 GB free space (includes YOLOv8 model download)
+- **Processor:** Intel/AMD dual-core processor (multi-core recommended)
+- **Webcam:** USB or built-in webcam with at least 30 FPS
+- **Network:** Not required (runs offline after initial model download)
+
+### Optional
+- **GPU:** NVIDIA CUDA-compatible GPU for faster detection (optional, CPU mode works fine)
 
 ---
 
 ## Prerequisites
 
 - Python 3.11+
-- GitHub account
-- Render account (free)
-- Vercel account (free)
-- Git installed
+- Git (for cloning the repository)
+- A webcam device
 
 ---
 
-## Step 1: Local Testing (Optional but Recommended)
+## Installation & Setup
 
-### Terminal 1 - Backend
+### Step 1: Clone the Repository
+
+```bash
+git clone <repository-url>
+cd phonedetector
+```
+
+### Step 2: Backend Setup
+
+#### Terminal 1 - Backend Server
+
 ```bash
 cd backend
 python -m venv venv
@@ -28,134 +52,95 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### Terminal 2 - Frontend
+**Expected Output:**
+```
+ * Running on http://127.0.0.1:5000
+ * Press CTRL+C to quit
+```
+
+### Step 3: Frontend Setup
+
+#### Terminal 2 - Frontend Server
+
 ```bash
 cd frontend
 python -m http.server 8000
 ```
 
-Visit: `http://localhost:8000`
+**Expected Output:**
+```
+Serving HTTP on 0.0.0.0 port 8000
+```
 
----
+### Step 4: Access the Application
 
-## Step 2: Deploy Backend to Render
+Open your web browser and visit:
+```
+http://localhost:8000
+```
 
-### Step A: Prepare Repository
-1. Push code to GitHub (if not already)
-2. Note your **backend folder path** (should be `/backend`)
-
-### Step B: Create Render Service
-1. Go to https://render.com
-2. Sign up with GitHub
-3. Click "New +" → "Web Service"
-4. Select your repository
-5. Fill in settings:
-   - **Name:** `phonedetector-backend`
-   - **Root Directory:** `backend`
-   - **Environment:** Python 3
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `python app.py`
-   - **Plan:** Free
-
-6. Click "Create Web Service"
-7. Wait 2-3 minutes for deployment
-8. **Copy your backend URL** (e.g., `https://phonedetector-backend.onrender.com`)
-
-### Verify Backend is Running
-Visit: `https://phonedetector-backend.onrender.com/`
-Expected: `{"status": "running", "message": "Phone Detector API"}`
-
----
-
-## Step 3: Deploy Frontend to Vercel
-
-### Step A: Prepare Repository
-1. Your code must already be on GitHub
-2. Note your **frontend folder path** (should be `/frontend`)
-
-### Step B: Create Vercel Project
-1. Go to https://vercel.com
-2. Sign up with GitHub
-3. Click "Add New..." → "Project"
-4. Select your repository
-5. Fill in settings:
-   - **Project Name:** `phonedetector`
-   - **Framework:** "Other"
-   - **Root Directory:** `frontend`
-
-6. Click "Deploy"
-7. Wait 1-2 minutes
-8. **Copy your frontend URL** (e.g., `https://phonedetector.vercel.app`)
-
----
-
-## Step 4: Connect Backend URL to Frontend
-
-Choose ONE option:
-
-#### Option A: Environment Variable (Recommended)
-1. Go to Vercel Dashboard
-2. Select your project
-3. Click "Settings" → "Environment Variables"
-4. Add new variable:
-   - **Name:** `NEXT_PUBLIC_BACKEND_HOST`
-   - **Value:** `phonedetector-backend.onrender.com` (your Render URL without https://)
-5. Redeploy project
-
-#### Option B: Edit Code
-1. Edit `frontend/script.js` line 7
-2. Change:
-   ```javascript
-   `https://${window.BACKEND_HOST || "YOUR-BACKEND-URL.onrender.com"}/detect`
-   ```
-   To:
-   ```javascript
-   `https://${window.BACKEND_HOST || "your-actual-render-url.onrender.com"}/detect`
-   ```
-3. Push to GitHub → Vercel auto-redeploys
-
----
-
-## Final Verification
-
-1. Visit your frontend URL
-2. Allow camera permission
-3. Point phone at camera
-4. Expected result: Red alert appears + alarm plays
-5. Test with phone front and back
-
----
-
-## Final URLs
-
-- Frontend: `https://phone-detector-ai.vercel.app`
-- Backend API: `https://phone-detector-ai-backend.onrender.com`
-- Test Backend: `https://phone-detector-ai-backend.onrender.com/`
+The application should load and request webcam access. Click "Allow" to begin phone detection.
 
 ---
 
 ## Troubleshooting
 
-### Backend Issues (Render)
-- Check Render logs: Project → Logs
-- Common issue: Model downloads on first run (1-2 minutes)
-- Solution: Wait 2 minutes, refresh page
+### Port Already in Use
+- Backend (5000): Change `app.run(port=5000)` in `backend/app.py`
+- Frontend (8000): Use `python -m http.server 9000` instead
 
-### Frontend Issues (Vercel)
-- Check Vercel logs: Project → Deployments → View logs
-- Hard refresh browser: Ctrl+Shift+R
-- Clear browser cache
+### Webcam Not Found
+- Ensure no other application is using your webcam
+- Check browser permissions for camera access
+- Restart the browser and try again
 
-### Connection Issues
-- Verify backend URL in script.js
-- Check CORS is enabled (default)
-- Test backend endpoint directly in browser
+### Slow Detection
+- Close unnecessary applications to free up RAM
+- For GPU acceleration, install CUDA support (advanced)
+
+### Model Download Issues
+- Ensure internet connection during first run
+- YOLOv8 model (~6MB) will load/download automatically
+- First run may take 5-10 seconds for model warmup
 
 ---
 
-## Notes
+## Cloud Deployment (Optional)
 
-- Both Render and Vercel free tiers are sufficient
-- Model (YOLOv8) auto-downloads on first detection (~40MB)
-- Backend may sleep after 15 min inactivity (free tier) - refresh to wake up
-- No database needed - stateless API
+### Backend (Render / Railway / VPS)
+1. Push repo to GitHub.
+2. In Render / Railway, create a new Web Service pointing to `backend/`.
+3. Set build command: `pip install -r requirements.txt`.
+4. Set start command: `gunicorn app:app -b 0.0.0.0:$PORT` (or `python app.py`).
+5. Copy your live backend URL (e.g., `https://your-backend.onrender.com`).
+
+### Frontend (Vercel / Netlify / GitHub Pages)
+1. In Vercel / Netlify, deploy the `frontend/` folder.
+2. Open the deployed frontend in browser.
+3. In the right-hand panel, paste your backend URL into the **Backend Connection** field (e.g. `https://your-backend.onrender.com/detect`) and click **Connect**.
+4. The setting is persisted automatically in your browser's `localStorage`.
+
+---
+
+## Final Verification
+
+1. Visit your frontend URL (`http://localhost:8000`)
+2. Allow camera permission
+3. Point phone at camera
+4. Expected result:
+   - Green bounding box with target reticles locks onto phone
+   - Red alert modal triggers
+   - High priority alarm audio plays with 0ms latency
+   - Spoken voice alert warns user to focus
+5. Test with phone front, back, and at various angles.
+
+---
+
+## Summary of Fixes & Optimizations
+
+- **Instant Zero-Latency Loop:** Frame interval reduced from 20,000ms (20s) to a continuous ~30+ FPS stream.
+- **YOLO Targeted Class Filtering:** Prunes non-target classes (COCO class 67), reducing NMS overhead.
+- **Binary JPEG Streaming:** Direct canvas-to-blob binary stream over HTTP.
+- **0ms Web Audio Engine:** Pre-decoded in-memory `AudioBuffer` eliminates playback lag.
+- **Voice Warning Sync:** Speech synthesis auto-cleans queues to prevent stutter.
+
