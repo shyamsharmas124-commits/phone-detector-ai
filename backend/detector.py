@@ -1,8 +1,11 @@
-﻿import os
+import os
 import time
 import cv2
 import numpy as np
 import torch
+
+# Fix for Render deployment: explicitly set YOLO config dir to writable tmp dir
+os.environ["YOLO_CONFIG_DIR"] = "/tmp/Ultralytics"
 from ultralytics import YOLO
 
 # Optimize PyTorch CPU threading
